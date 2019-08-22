@@ -11,8 +11,8 @@ public class Subscribe {
 	private Long id;
 	private String name;
 	
-	@ManyToMany(mappedBy = "subscribes", fetch = FetchType.LAZY)
-	private Set<User> users;
+//	@ManyToMany(mappedBy = "subscribes", fetch = FetchType.LAZY)
+//	private Set<User> users;
 
 	public Long getId() {
 		return id;
@@ -30,13 +30,13 @@ public class Subscribe {
 		this.name = name;
 	}
 
-	public Set<User> getUsers() {
-		return users;
-	}
-
-	public void setUsers(Set<User> users) {
-		this.users = users;
-	}
+//	public Set<User> getUsers() {
+//		return users;
+//	}
+//
+//	public void setUsers(Set<User> users) {
+//		this.users = users;
+//	}
 	
 	
 }

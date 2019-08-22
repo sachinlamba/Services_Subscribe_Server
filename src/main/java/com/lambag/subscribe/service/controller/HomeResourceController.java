@@ -60,15 +60,15 @@ public class HomeResourceController {
 			s.setId(service.getId());
 			s.setName(service.getName());
 			
-			Set<User> users = new HashSet<User>();
-			service.getUsers().forEach(user -> {
-				User u = new User();
-				u.setId(user.getId());
-				u.setUsername(user.getUsername());
-				users.add(u);
-			});
-			
-			s.setUsers(users);
+//			Set<User> users = new HashSet<User>();
+//			service.getUsers().forEach(user -> {
+//				User u = new User();
+//				u.setId(user.getId());
+//				u.setUsername(user.getUsername());
+//				users.add(u);
+//			});
+//			
+//			s.setUsers(users);
 			subscribes.add(s);
 		});
 		return subscribes;
@@ -94,7 +94,7 @@ public class HomeResourceController {
 	public void userSubscribeService(@RequestBody User user) {
 		System.out.println("new service subscribe request details" + user);
 		User userDetails = userRepository.getOne(user.getId());
-		
+		 
 		Subscribe newSubscribtion = new Subscribe();
 		user.getSubscribes()
 		.forEach(u1 -> newSubscribtion.setId(u1.getId()));

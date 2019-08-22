@@ -43,16 +43,16 @@ public class DataInit implements ApplicationRunner {
         
 
 		if(subscribeCount == 0) {
-			Set<User> users1 = new HashSet<User>();
-			users1.add(u1);
-			
-			s1.setUsers(users1);
-			
-			Set<User> users2 = new HashSet<User>();
-			users2.add(u1);
-			users2.add(u2);
-			
-			s1.setUsers(users2);
+//			Set<User> users1 = new HashSet<User>();
+//			users1.add(u1);
+//			
+//			s1.setUsers(users1);
+//			
+//			Set<User> users2 = new HashSet<User>();
+//			users2.add(u1);
+//			users2.add(u2);
+//			
+//			s1.setUsers(users2);
 			
             subscribeDAO.save(s1);
             subscribeDAO.save(s2);
