@@ -1,5 +1,6 @@
 package com.lambag.subscribe.service.controller;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lambag.subscribe.service.model.Subscribe;
@@ -29,6 +31,20 @@ public class HomeResourceController {
 	public String home() {
 		return ("<h1>Welcome here</h1>");
 	}
+	
+	@RequestMapping(value = "/username", method = RequestMethod.GET)
+	@ResponseBody
+	public String currentUserName(Principal principal) {
+	   return principal.getName();
+	   //https://dzone.com/articles/how-to-get-current-logged-in-username-in-spring-se
+//	   Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//	   if (principal instanceof UserDetails) {
+//	     String username = ((UserDetails)principal).getUsername();
+//	   } else {
+//	     String username = principal.toString();
+//	   }
+	}
+	
 
 	@RequestMapping("/allServices")
 	public List<Subscribe> subscribeList() {
