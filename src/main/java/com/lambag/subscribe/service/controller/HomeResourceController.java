@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -64,38 +65,27 @@ public class HomeResourceController {
 		subscribeRepository.save(s);
 	}
 
-	@RequestMapping(method=RequestMethod.POST, value="/subscribeServices")
-	public void userSubscribeService(@RequestBody Subscribe service) {
-		System.out.println("new service subscribe request details" + service);
-		Subscribe s = new Subscribe();
-		s.setId(service.getId());
-//		s.setName(service.getName());
-		User u = new User();
-		service.getUsers()
-		.forEach(s1 -> u.setId(s1.getId()));
-		
-		Set<User> users = new HashSet<>();
-		users.add(u);
-		s.setUsers(users);
-		
-		subscribeRepository.save(s);
+	@RequestMapping(method=RequestMethod.DELETE , value="/allServices/{id}")
+	public void deleteService(@PathVariable Long id) {
+		subscribeRepository.deleteById(id);
 	}
 	
-
-	@RequestMapping(method=RequestMethod.POST, value="/users")
-	public void addUser(@RequestBody User user) {
-		System.out.println("new user request details: " + user.getUsername() + " -- " + user.getPassword() + " --- " + user.getSubscribes());
-		User u = new User();
-//		u.setId(user.getId());
-		u.setUsername(user.getUsername());
-		u.setPassword(user.getPassword());
-//		u.setUsers(users);
+	@RequestMapping(method=RequestMethod.POST, value="/userSubscribeServices")
+	public void userSubscribeService(@RequestBody User user) {
+		System.out.println("new service subscribe request details" + user);
+		User userDetails = userRepository.getOne(user.getId());
 		
-		userRepository.save(u);
+		Subscribe newSubscribtion = new Subscribe();
+		user.getSubscribes()
+		.forEach(u1 -> newSubscribtion.setId(u1.getId()));
+		
+		Set<Subscribe> alreadySubscribtions = userDetails.getSubscribes();
+		alreadySubscribtions.add(newSubscribtion);
+		userDetails.setSubscribes(alreadySubscribtions);
+		
+		userRepository.save(userDetails);
 	}
 	
-	
-
 	@RequestMapping("/users")
 	public List<User> userList() {
 		List<User> users = new ArrayList<>();
@@ -120,4 +110,25 @@ public class HomeResourceController {
 		});
 		return users;
 	}
+	
+
+	@RequestMapping(method=RequestMethod.POST, value="/users")
+	public void addUser(@RequestBody User user) {
+		System.out.println("new user request details: " + user.getUsername() + " -- " + user.getPassword() + " --- " + user.getSubscribes());
+		User u = new User();
+//		u.setId(user.getId());
+		u.setUsername(user.getUsername());
+		u.setPassword(user.getPassword());
+//		u.setUsers(users);
+		
+		userRepository.save(u);
+	}
+
+	@RequestMapping(method=RequestMethod.DELETE , value="/users/{id}")
+	public void deleteUser(@PathVariable Long id) {
+		userRepository.deleteById(id);
+	}
+	
+	
+	
 }
