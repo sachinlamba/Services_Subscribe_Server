@@ -23,7 +23,7 @@ import com.lambag.subscribe.service.repository.UserRepository;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-//@RequestMapping("/api")
+@RequestMapping("/api")
 public class HomeResourceController {
 	@Autowired
 	private SubscribeRepository subscribeRepository;
@@ -31,9 +31,9 @@ public class HomeResourceController {
 	@Autowired
 	private UserRepository userRepository;
 	
-	@RequestMapping("/")
+	@RequestMapping("/home")
 	public String home() {
-		return ("<h1>Welcome here</h1>");
+		return ("<h1>Welcome to SpringBoot API service</h1>");
 	}
 	
 	@RequestMapping(value = "/username", method = RequestMethod.GET)
