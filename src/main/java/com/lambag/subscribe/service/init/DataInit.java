@@ -33,6 +33,10 @@ public class DataInit implements ApplicationRunner {
         s1.setName("BroadBand");
         Subscribe s2 = new Subscribe();
         s2.setName("LandLine");
+        Subscribe s3 = new Subscribe();
+        s3.setName("Cellular Services");
+        Subscribe s4 = new Subscribe();
+        s4.setName("Home D2H");
         
 		User u1 = new User();
         u1.setUsername("one");
@@ -56,6 +60,8 @@ public class DataInit implements ApplicationRunner {
 			
             subscribeDAO.save(s1);
             subscribeDAO.save(s2);
+            subscribeDAO.save(s3);
+            subscribeDAO.save(s4);
 		}
 		
 		if(userCount == 0) {
