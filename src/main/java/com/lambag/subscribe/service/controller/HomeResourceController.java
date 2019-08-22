@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +21,9 @@ import com.lambag.subscribe.service.model.User;
 import com.lambag.subscribe.service.repository.SubscribeRepository;
 import com.lambag.subscribe.service.repository.UserRepository;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
+//@RequestMapping("/api")
 public class HomeResourceController {
 	@Autowired
 	private SubscribeRepository subscribeRepository;
@@ -145,6 +149,16 @@ public class HomeResourceController {
 		userRepository.deleteById(id);
 	}
 	
-	
+
+	@RequestMapping(method=RequestMethod.POST, value="/authenticate")
+	public User authenticateUser(@RequestBody User user) {
+		System.out.println("new user request details: " + user.getUsername() + " -- " + user.getPassword() + " --- " + user.getSubscribes());
+		User u = userRepository.findByUsername(user.getUsername());
+		if(u.getPassword().equals(user.getPassword())) {
+			return u;
+		}
+		throw new BadCredentialsException("Invalid Credentials!!!");
+		
+	}
 	
 }
