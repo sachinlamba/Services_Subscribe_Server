@@ -89,10 +89,10 @@ public class HomeResourceController {
 	public void deleteService(@PathVariable Long id) {
 		subscribeRepository.deleteById(id);
 	}
-	
+
 	@RequestMapping(method=RequestMethod.POST, value="/userSubscribeServices")
 	public void userSubscribeService(@RequestBody User user) {
-		System.out.println("new service subscribe request details" + user);
+		System.out.println("new service subscribe request user details" + user);
 		User userDetails = userRepository.getOne(user.getId());
 		 
 		Subscribe newSubscribtion = new Subscribe();
@@ -102,6 +102,24 @@ public class HomeResourceController {
 		Set<Subscribe> alreadySubscribtions = userDetails.getSubscribes();
 		alreadySubscribtions.add(newSubscribtion);
 		userDetails.setSubscribes(alreadySubscribtions);
+		 
+		userRepository.save(userDetails);
+	}
+
+	@RequestMapping(method=RequestMethod.DELETE, value="/userSubscribeServices/{id}")
+	public void userUnsubscribeService(@RequestBody User user, @PathVariable Long id) {
+		System.out.println("service unsubscribe request user details = " + user + " -" + id);
+		User userDetails = userRepository.getOne(user.getId());
+		
+		Set<Subscribe> subscribes = new HashSet<>();
+		userDetails.getSubscribes()
+		.forEach(s -> {
+			if(!s.getId().equals(id)) {
+				subscribes.add(s);
+			}
+		});
+		
+		userDetails.setSubscribes(subscribes);
 		
 		userRepository.save(userDetails);
 	}
