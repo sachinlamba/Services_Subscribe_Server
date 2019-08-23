@@ -8,26 +8,26 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
-import com.lambag.subscribe.service.dao.SubscribeDAO;
-import com.lambag.subscribe.service.dao.UserDAO;
+import com.lambag.subscribe.service.repository.SubscribeRepository;
+import com.lambag.subscribe.service.repository.UserRepository;
 import com.lambag.subscribe.service.model.Subscribe;
 import com.lambag.subscribe.service.model.User;
 
 @Component
 public class DataInit implements ApplicationRunner {
-	private UserDAO userDAO;
-	private SubscribeDAO subscribeDAO;
+	private UserRepository userRepository;
+	private SubscribeRepository subscribeRepository;
 	
 	@Autowired
-	public DataInit(UserDAO userDAO, SubscribeDAO subscribeDAO) {
-		this.userDAO = userDAO;
-		this.subscribeDAO = subscribeDAO;
+	public DataInit(UserRepository userRepository, SubscribeRepository subscribeRepository) {
+		this.userRepository = userRepository;
+		this.subscribeRepository = subscribeRepository;
 	}
 	
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		long userCount = userDAO.count();
-		long subscribeCount = subscribeDAO.count();
+		long userCount = userRepository.count();
+		long subscribeCount = subscribeRepository.count();
 		
 		Subscribe s1 = new Subscribe();
         s1.setName("BroadBand");
@@ -58,10 +58,10 @@ public class DataInit implements ApplicationRunner {
 //			
 //			s1.setUsers(users2);
 			
-            subscribeDAO.save(s1);
-            subscribeDAO.save(s2);
-            subscribeDAO.save(s3);
-            subscribeDAO.save(s4);
+			subscribeRepository.save(s1);
+			subscribeRepository.save(s2);
+			subscribeRepository.save(s3);
+			subscribeRepository.save(s4);
 		}
 		
 		if(userCount == 0) {
@@ -76,8 +76,8 @@ public class DataInit implements ApplicationRunner {
 			
             u2.setSubscribes(subscribes2);
  
-            userDAO.save(u1);
-            userDAO.save(u2);
+            userRepository.save(u1);
+            userRepository.save(u2);
 		}
 
 		

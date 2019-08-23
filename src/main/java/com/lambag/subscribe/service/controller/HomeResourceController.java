@@ -1,35 +1,30 @@
 package com.lambag.subscribe.service.controller;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lambag.subscribe.service.SubscribeService;
+import com.lambag.subscribe.service.UserService;
 import com.lambag.subscribe.service.model.Subscribe;
 import com.lambag.subscribe.service.model.User;
-import com.lambag.subscribe.service.repository.SubscribeRepository;
-import com.lambag.subscribe.service.repository.UserRepository;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api")
 public class HomeResourceController {
 	@Autowired
-	private SubscribeRepository subscribeRepository;
+	private SubscribeService subscribeService;
 	
 	@Autowired
-	private UserRepository userRepository;
+	private UserService userService;
 	
 	@RequestMapping("/home")
 	public String home() {
@@ -37,10 +32,9 @@ public class HomeResourceController {
 	}
 	
 	@RequestMapping(value = "/username", method = RequestMethod.GET)
-	@ResponseBody
 	public String currentUserName(Principal principal) {
 	   return principal.getName();
-	   //https://dzone.com/articles/how-to-get-current-logged-in-username-in-spring-se
+//	   //https://dzone.com/articles/how-to-get-current-logged-in-username-in-spring-se
 //	   Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 //	   if (principal instanceof UserDetails) {
 //	     String username = ((UserDetails)principal).getUsername();
@@ -49,134 +43,48 @@ public class HomeResourceController {
 //	   }
 	}
 	
-
 	@RequestMapping("/allServices")
 	public List<Subscribe> subscribeList() {
-		List<Subscribe> subscribes = new ArrayList<>();
-		subscribeRepository.findAll()
-//		.forEach(subscribes::add);
-		.forEach(service -> {
-			Subscribe s = new Subscribe();
-			s.setId(service.getId());
-			s.setName(service.getName());
-			
-//			Set<User> users = new HashSet<User>();
-//			service.getUsers().forEach(user -> {
-//				User u = new User();
-//				u.setId(user.getId());
-//				u.setUsername(user.getUsername());
-//				users.add(u);
-//			});
-//			
-//			s.setUsers(users);
-			subscribes.add(s);
-		});
-		return subscribes;
+		return subscribeService.getAllSubscribeServices();
 	}
 
 	@RequestMapping(method=RequestMethod.POST, value="/allServices")
 	public void allService(@RequestBody Subscribe service) {
-		System.out.println("new service subscribe request details" + service);
-		Subscribe s = new Subscribe();
-//		s.setId(service.getId());
-		s.setName(service.getName());
-//		s.setUsers(users);
-		
-		subscribeRepository.save(s);
+		subscribeService.addSubscribe(service);
 	}
 
 	@RequestMapping(method=RequestMethod.DELETE , value="/allServices/{id}")
 	public void deleteService(@PathVariable Long id) {
-		subscribeRepository.deleteById(id);
-	}
-
-	@RequestMapping(method=RequestMethod.POST, value="/userSubscribeServices")
-	public void userSubscribeService(@RequestBody User user) {
-		System.out.println("new service subscribe request user details" + user);
-		User userDetails = userRepository.getOne(user.getId());
-		 
-		Subscribe newSubscribtion = new Subscribe();
-		user.getSubscribes()
-		.forEach(u1 -> newSubscribtion.setId(u1.getId()));
-		
-		Set<Subscribe> alreadySubscribtions = userDetails.getSubscribes();
-		alreadySubscribtions.add(newSubscribtion);
-		userDetails.setSubscribes(alreadySubscribtions);
-		 
-		userRepository.save(userDetails);
-	}
-
-	@RequestMapping(method=RequestMethod.DELETE, value="/userSubscribeServices/{id}")
-	public void userUnsubscribeService(@RequestBody User user, @PathVariable Long id) {
-		System.out.println("service unsubscribe request user details = " + user + " -" + id);
-		User userDetails = userRepository.getOne(user.getId());
-		
-		Set<Subscribe> subscribes = new HashSet<>();
-		userDetails.getSubscribes()
-		.forEach(s -> {
-			if(!s.getId().equals(id)) {
-				subscribes.add(s);
-			}
-		});
-		
-		userDetails.setSubscribes(subscribes);
-		
-		userRepository.save(userDetails);
+		subscribeService.deleteSubscribe(id);
 	}
 	
 	@RequestMapping("/users")
 	public List<User> userList() {
-		List<User> users = new ArrayList<>();
-		userRepository.findAll()
-//		.forEach(users::add);
-		.forEach(user -> {
-			User u = new User();
-			u.setId(user.getId());
-			u.setUsername(user.getUsername());
-			
-			Set<Subscribe> subscribes = new HashSet<Subscribe>();
-			user.getSubscribes().forEach(service -> {
-				Subscribe s = new Subscribe();
-				s.setId(service.getId());
-				s.setName(service.getName());
-				
-				subscribes.add(s);
-			});
-			
-			u.setSubscribes(subscribes);
-			users.add(u);
-		});
-		return users;
+		return userService.getAllUsers();
 	}
 	
-
 	@RequestMapping(method=RequestMethod.POST, value="/users")
 	public void addUser(@RequestBody User user) {
-		System.out.println("new user request details: " + user.getUsername() + " -- " + user.getPassword() + " --- " + user.getSubscribes());
-		User u = new User();
-//		u.setId(user.getId());
-		u.setUsername(user.getUsername());
-		u.setPassword(user.getPassword());
-//		u.setUsers(users);
-		
-		userRepository.save(u);
+		userService.addUser(user);
 	}
 
 	@RequestMapping(method=RequestMethod.DELETE , value="/users/{id}")
 	public void deleteUser(@PathVariable Long id) {
-		userRepository.deleteById(id);
+		userService.deleteUser(id);
 	}
 	
-
 	@RequestMapping(method=RequestMethod.POST, value="/authenticate")
 	public User authenticateUser(@RequestBody User user) {
-		System.out.println("new user request details: " + user.getUsername() + " -- " + user.getPassword() + " --- " + user.getSubscribes());
-		User u = userRepository.findByUsername(user.getUsername());
-		if(u.getPassword().equals(user.getPassword())) {
-			return u;
-		}
-		throw new BadCredentialsException("Invalid Credentials!!!");
-		
+		return userService.authenticateUser(user);
 	}
-	
+
+	@RequestMapping(method=RequestMethod.POST, value="/userSubscribeServices")
+	public void userSubscribeService(@RequestBody User user) {
+		userService.userSubscribeService(user);
+	}
+
+	@RequestMapping(method=RequestMethod.DELETE, value="/userSubscribeServices/{id}")
+	public void userUnsubscribeService(@RequestBody User user, @PathVariable Long id) {
+		userService.userUnsubscribeService(user, id);
+	}
 }
