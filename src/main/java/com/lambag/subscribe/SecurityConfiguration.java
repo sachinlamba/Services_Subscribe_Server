@@ -1,6 +1,7 @@
 package com.lambag.subscribe;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -27,12 +28,26 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	}
 	@Override
     protected void configure(HttpSecurity http) throws Exception {
+		
+		http
+		.httpBasic()
+        .and()
+			.authorizeRequests()
+//			.antMatchers("/").permitAll()
+//			.antMatchers("/h2_console/**").permitAll();
+			.antMatchers("/static/**").permitAll()
+			.antMatchers("/api/allServices").permitAll()
+			.antMatchers("/api/authenticate").permitAll()
+			.antMatchers(HttpMethod.POST, "/api/allServices").hasRole("ADMIN")
+			.anyRequest().authenticated();
+		
+		
 		//Don't use this configuration in a production environment
-        http.authorizeRequests()
-                .antMatchers("/").permitAll()
-                .antMatchers("/h2_console/**").permitAll();
+//        http.authorizeRequests()
+//                .antMatchers("/").permitAll()
+//                .antMatchers("/h2_console/**").permitAll();
 
         http.csrf().disable();
-//        http.headers().frameOptions().disable();
+        http.headers().frameOptions().disable();
     }
 }

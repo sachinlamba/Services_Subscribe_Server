@@ -20,15 +20,15 @@ import com.lambag.subscribe.service.model.User;
 @RestController
 @RequestMapping("/api")
 public class HomeResourceController {
+	
 	@Autowired
 	private SubscribeService subscribeService;
-	
 	@Autowired
 	private UserService userService;
 	
-	@RequestMapping("/home")
+	@RequestMapping("/")
 	public String home() {
-		return ("<h1>Welcome to SpringBoot API service</h1>");
+		return ("<h1>Welcome to SpringBoot service API</h1>");
 	}
 	
 	@RequestMapping(value = "/username", method = RequestMethod.GET)
