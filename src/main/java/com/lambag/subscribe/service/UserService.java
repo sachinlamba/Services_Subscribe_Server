@@ -47,38 +47,42 @@ public class UserService {
 		User userDetails = userRepository.getOne(user.getId());
 		//new==========
 		//not sure if it can append or overwrite subscriptions..need to check..maybe depends on how UI send it.userSubscribeService || userSubscribeServices
-		userDetails.setSubscribes(user.getSubscribes());
-		
-		userRepository.save(userDetails);
-		//old==========
-//		//for now, only 1 subscription is being added
-//		Subscribe newSubscribtion = new Subscribe();
+//		userDetails.setSubscribes(user.getSubscribes());
 //		
-//		user.getSubscribes()
-//			.forEach(u1 -> newSubscribtion.setId(u1.getId()));
-//		
-//		Set<Subscribe> alreadySubscribtions = userDetails.getSubscribes();
-//		alreadySubscribtions.add(newSubscribtion);
-//		userDetails.setSubscribes(alreadySubscribtions); 
 //		userRepository.save(userDetails);
+		
+		//old==========
+		//for now, only 1 subscription is being added
+		Subscribe newSubscribtion = new Subscribe();
+		
+		user.getSubscribes()
+			.forEach(u1 -> newSubscribtion.setId(u1.getId()));
+		
+		Set<Subscribe> alreadySubscribtions = userDetails.getSubscribes();
+		alreadySubscribtions.add(newSubscribtion);
+		userDetails.setSubscribes(alreadySubscribtions); 
+		userRepository.save(userDetails);
 	}
 
 	public void userUnsubscribeService(User user, Long serviceId) {
 		User userDetails = userRepository.getOne(user.getId());
 		
-//		Set<Subscribe> subscribes = new HashSet<>();
+		//old==========
+		Set<Subscribe> subscribes = new HashSet<>();
+		
 		userDetails.getSubscribes()
-		.forEach(s -> {
-			//new==========
-			if(s.getId().equals(serviceId)) {
-				userDetails.getSubscribes().remove(s);
-			}
-			//old==========
-//			if(!s.getId().equals(serviceId)) {
-//				subscribes.add(s);
-//			}
-		});
-//		userDetails.setSubscribes(subscribes);
+			.forEach(s -> {
+				//new==========
+//				if(s.getId().equals(serviceId)) {
+//					userDetails.getSubscribes().remove(s);
+//				}
+				//old==========
+				if(!s.getId().equals(serviceId)) {
+					subscribes.add(s);
+				}
+			});
+		//old==========
+		userDetails.setSubscribes(subscribes);
 		
 		userRepository.save(userDetails);
 	}
